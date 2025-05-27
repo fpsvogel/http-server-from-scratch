@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative "../server"
+require_relative "../lib/server"
 
 Server.new.start

@@ -1,5 +1,5 @@
 require "open3"
-require_relative "server"
+require_relative "../lib/server"
 
 class TestServer
   attr_reader :server_pid, :stdout, :stderr

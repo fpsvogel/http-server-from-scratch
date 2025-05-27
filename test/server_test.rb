@@ -12,7 +12,7 @@ class ServerTest < Minitest::Test
     @server.kill
   end
 
-  def test_server_response
+  def test_200_response
     output = `curl -s http://localhost:4000 2>&1`
     expected = "Hello World!"
 
