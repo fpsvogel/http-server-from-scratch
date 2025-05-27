@@ -1,7 +1,8 @@
 class Response
-  private attr_reader :exception
+  private attr_reader :request, :exception
 
-  def initialize(exception = nil)
+  def initialize(request = nil, exception: nil)
+    @request = request
     @exception = exception
   end
 
@@ -31,7 +32,7 @@ class Response
       if exception
         "#{exception.class}: #{exception.message}\n#{exception.backtrace.join("\n")}"
       else
-        "Hello World!"
+        "Hello World!\n#{request}"
       end
   end
 end

@@ -14,9 +14,15 @@ class ServerTest < Minitest::Test
 
   def test_200_response
     output = `curl -s http://localhost:4000 2>&1`
-    expected = "Hello World!"
+    expected = <<~END
+      Hello World!
+      GET / HTTP/1.1
+      Host: localhost:4000
+      User-Agent: curl/8.7.1
+      Accept: */*
+    END
 
-    assert_equal expected, output.strip,
+    assert_equal expected.strip, output.strip,
       "Server did not return expected response. #{@server.error_message}"
   end
 end

@@ -17,11 +17,11 @@ class Server
 
     loop do
       client = server.accept
-      request = Request.read(client)
+      request = Request.new(client)
       puts request
-      client.write(Response.new.to_s)
+      client.write(Response.new(request).to_s)
     rescue => e
-      client&.write(Response.new(e).to_s)
+      client&.write(Response.new(exception: e).to_s)
       raise e
     ensure
       client&.close
