@@ -4,8 +4,9 @@
 # Then visit http://localhost:4321 in your browser or run `curl -v http://localhost:4000`
 
 require "socket"
-require_relative "response"
+require_relative "live_reloader"
 require_relative "request"
+require_relative "response"
 
 class Server
   PORT = 4000
@@ -15,16 +16,19 @@ class Server
     server = TCPServer.new(PORT)
     puts "#{START_MESSAGE} on port #{PORT}..."
 
+    LiveReloader.start
+
     loop do
       client = server.accept
       request = Request.new(client)
       puts request
+      puts
       response = Response.new(
         "Hello Response!",
         headers: {"Content-Language" => "en"}
       )
-      puts
       puts response
+      puts
       client.write(response.to_s)
     rescue Request::InvalidRequestError => e
       response = Response.new(
@@ -34,6 +38,7 @@ class Server
       )
       client&.write(response.to_s)
       puts response
+      puts
       next
     rescue => e
       response = Response.new(
