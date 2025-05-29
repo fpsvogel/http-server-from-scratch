@@ -18,13 +18,23 @@ class Server
     loop do
       client = server.accept
       request = Request.new(client)
-      p request.to_s
+      puts request
       response = Response.new(
         "Hello Response!",
         headers: {"Content-Language" => "en"}
       )
-      p response.to_s
+      puts
+      puts response
       client.write(response.to_s)
+    rescue Request::InvalidRequestError => e
+      response = Response.new(
+        "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}",
+        status: 400,
+        message: "Bad Request"
+      )
+      client&.write(response.to_s)
+      puts response
+      next
     rescue => e
       response = Response.new(
         "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}",

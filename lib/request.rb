@@ -1,4 +1,6 @@
 class Request
+  InvalidRequestError = Class.new(StandardError)
+
   attr_reader :method, :url, :http_version, :headers
   private attr_reader :raw_lines, :client
 
@@ -34,5 +36,7 @@ class Request
       .map { |line|
         line.split(":", 2).map(&:strip)
       }.to_h
+  rescue => e
+    raise InvalidRequestError, "Failed to parse request due to exception #{e.class}: #{e.message}\n#{e.backtrace.join("\n\t")}"
   end
 end
