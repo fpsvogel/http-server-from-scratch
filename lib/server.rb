@@ -18,10 +18,20 @@ class Server
     loop do
       client = server.accept
       request = Request.new(client)
-      puts request
-      client.write(Response.new(request).to_s)
+      p request.to_s
+      response = Response.new(
+        "Hello Response!",
+        headers: {"Content-Language" => "en"}
+      )
+      p response.to_s
+      client.write(response.to_s)
     rescue => e
-      client&.write(Response.new(exception: e).to_s)
+      response = Response.new(
+        "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}",
+        status: 500,
+        message: "Internal Server Error"
+      )
+      client&.write(response.to_s)
       raise e
     ensure
       client&.close

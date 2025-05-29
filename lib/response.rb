@@ -1,38 +1,35 @@
 class Response
-  private attr_reader :request, :exception
+  private attr_reader :version, :status, :message, :headers, :body
 
-  def initialize(request = nil, exception: nil)
-    @request = request
-    @exception = exception
+  def initialize(
+    body,
+    version: "1.1",
+    status: 200,
+    message: "OK",
+    headers: {}
+  )
+    @version = version
+    @status = status
+    @message = message
+    @headers = default_headers(body).merge(headers)
+    @body = body
   end
 
   def to_s
-    headers = <<~END
-      HTTP/1.1 #{status} Internal Server Error
-      Content-Type: text/plain
-      Content-Length: #{content.length}
+    <<~END.chomp
+      HTTP/#{version} #{status} #{message}\r
+      #{headers.map { |k, v| "#{k}: #{v}" }.join("\r\n")}\r
+      \r
+      #{body}
     END
-
-    headers.gsub("\n", "\r\n") + "\r\n" + content
   end
 
   private
 
-  def status
-    @status ||=
-      if exception
-        500
-      else
-        200
-      end
-  end
-
-  def content
-    @content ||=
-      if exception
-        "#{exception.class}: #{exception.message}\n#{exception.backtrace.join("\n")}"
-      else
-        "Hello World!\n#{request}"
-      end
+  def default_headers(body)
+    {
+      "Content-Type" => "text/html",
+      "Content-Length" => body.bytesize.to_s
+    }
   end
 end

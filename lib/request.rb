@@ -8,7 +8,10 @@ class Request
   end
 
   def to_s
-    "#{method} #{url} HTTP/#{http_version}\n#{headers}\n"
+    <<~END
+      #{method} #{url} HTTP/#{http_version}
+      #{headers.map { |k, v| "#{k}: #{v}" }.join("\n")}
+    END
   end
 
   private
@@ -21,9 +24,15 @@ class Request
 
   def parse!
     @method, @url, rest = raw_lines[0].split(/\s/, 3)
+
     if (match = rest.match(/HTTP\/(?<major>\d+)\.(?<minor>\d+)/))
       @http_version = "#{match[:major]}.#{match[:minor]}"
     end
-    @headers = raw_lines[1..].join("\n")
+
+    @headers = raw_lines[1..]
+      .reject(&:empty?)
+      .map { |line|
+        line.split(":", 2).map(&:strip)
+      }.to_h
   end
 end
