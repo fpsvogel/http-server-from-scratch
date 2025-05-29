@@ -14,7 +14,7 @@ class TestServer
   def start
     # Start the server process with output buffering disabled.
     stdin, @stdout, @stderr, wait_thread =
-      Open3.popen3("ruby -e 'STDOUT.sync = true; STDERR.sync = true; load \"./bin/server\"'")
+      Open3.popen3("ruby -e 'STDOUT.sync = true; STDERR.sync = true; ARGV[0] = #{Server::DEFAULT_PORT - 1}; load \"./bin/server\"'")
     stdin.close
     @server_pid = wait_thread.pid
 

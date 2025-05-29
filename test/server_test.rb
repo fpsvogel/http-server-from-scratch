@@ -13,15 +13,15 @@ class ServerTest < Minitest::Test
   end
 
   def test_200_response
-    output = `curl -s -v http://localhost:4000 2>&1`
+    output = `curl -s -v http://localhost:3999 2>&1`
     expected = <<~END
-      * Host localhost:4000 was resolved.
+      * Host localhost:3999 was resolved.
       * IPv6: ::1
       * IPv4: 127.0.0.1
-      *   Trying [::1]:4000...
-      * Connected to localhost (::1) port 4000
+      *   Trying [::1]:3999...
+      * Connected to localhost (::1) port 3999
       > GET / HTTP/1.1\r
-      > Host: localhost:4000\r
+      > Host: localhost:3999\r
       > User-Agent: curl/8.7.1\r
       > Accept: */*\r
       > \r

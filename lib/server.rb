@@ -9,12 +9,18 @@ require_relative "request"
 require_relative "response"
 
 class Server
-  PORT = 4000
+  DEFAULT_PORT = 4000
   START_MESSAGE = "Server is running"
 
+  attr_reader :port
+
+  def initialize(port: DEFAULT_PORT)
+    @port = port || DEFAULT_PORT
+  end
+
   def start
-    server = TCPServer.new(PORT)
-    puts "#{START_MESSAGE} on port #{PORT}..."
+    server = TCPServer.new(port)
+    puts "#{START_MESSAGE} on port #{port}..."
 
     LiveReloader.start
 

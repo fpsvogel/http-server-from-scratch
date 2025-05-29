@@ -2,4 +2,4 @@
 
 require_relative "../lib/server"
 
-Server.new.start
+Server.new(port: ARGV[0]).start
