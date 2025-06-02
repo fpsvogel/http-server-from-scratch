@@ -2,26 +2,27 @@ require "open3"
 require_relative "../lib/server"
 
 class TestServer
-  attr_reader :server_pid, :stdout, :stderr
+  private attr_reader :pid, :stdout, :stderr
 
   def kill
     stdout&.close
     stderr&.close
-    Process.kill(9, server_pid)
+    Process.kill(9, pid)
   rescue
   end
 
   def start
-    # Start the server process with output buffering disabled.
+    # Start the server process with output buffering disabled, and with a port
+    # different from the default to avoid a conflict with a running server.
     stdin, @stdout, @stderr, wait_thread =
       Open3.popen3("ruby -e 'STDOUT.sync = true; STDERR.sync = true; ARGV[0] = #{Server::DEFAULT_PORT - 1}; load \"./bin/server\"'")
     stdin.close
-    @server_pid = wait_thread.pid
+    @pid = wait_thread.pid
 
     # On termination of the this process (for tests), kill the server process.
     # Prevents the server from running indefinitely if a #teardown doesn't run.
     at_exit do
-      Process.kill(9, server_pid)
+      kill
     rescue
     end
 
